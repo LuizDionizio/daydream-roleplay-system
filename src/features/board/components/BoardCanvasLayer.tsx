@@ -2,6 +2,9 @@
  * Responsável pela camada principal de renderização do Board.
  * Futuramente conterá mapas, grid, tokens e elementos visuais do cenário.
  */
+
+import { BoardToken } from "../entities/BoardToken";
+
 export function BoardCanvasLayer() {
   return (
     <div
@@ -18,7 +21,7 @@ export function BoardCanvasLayer() {
         className="
           relative
           h-[2200px]
-          w-[3200px]
+          w-[2200px]
           overflow-hidden
           rounded-[40px]
           border
@@ -32,33 +35,40 @@ export function BoardCanvasLayer() {
           className="
             absolute
             inset-0
-            bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.03),_transparent_70%)]
+            z-0
+            bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03),transparent_70%)]
           "
         />
 
         {/* GRID */}
         <div
-        className="
+          className="
             absolute
             inset-0
+            z-10
             opacity-[0.12]
-        "
-        style={{
+          "
+          style={{
             backgroundImage: `
-            linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px),
+              linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px),
 
-            linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
+              linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
             `,
             backgroundSize: `
-            64px 64px,
-            64px 64px,
-            16px 16px,
-            16px 16px
+              64px 64px,
+              64px 64px,
+              16px 16px,
+              16px 16px
             `,
-        }}
+          }}
         />
+
+        {/* ENTITY LAYER */}
+        <div className="absolute inset-0 z-20">
+          <BoardToken x={900} y={900} />
+        </div>
 
         {/* VIGNETTE */}
         <div
@@ -66,7 +76,8 @@ export function BoardCanvasLayer() {
             pointer-events-none
             absolute
             inset-0
-            bg-[radial-gradient(circle_at_center,_transparent_45%,_rgba(0,0,0,0.55))]
+            z-30
+            bg-[radial-gradient(circle_at_center,transparent_45%,rgba(0,0,0,0.55))]
           "
         />
       </div>

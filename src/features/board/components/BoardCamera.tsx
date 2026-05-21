@@ -9,9 +9,7 @@ type BoardCameraProps = {
   children: React.ReactNode;
 };
 
-export function BoardCamera({
-  children,
-}: BoardCameraProps) {
+export function BoardCamera({ children }: BoardCameraProps) {
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
@@ -30,11 +28,9 @@ export function BoardCamera({
     const handleMouseMove = (event: MouseEvent) => {
       if (!isDragging) return;
 
-      const deltaX =
-        event.clientX - lastMousePosition.current.x;
+      const deltaX = event.clientX - lastMousePosition.current.x;
 
-      const deltaY =
-        event.clientY - lastMousePosition.current.y;
+      const deltaY = event.clientY - lastMousePosition.current.y;
 
       setPosition((prev) => ({
         x: prev.x + deltaX,
@@ -55,21 +51,13 @@ export function BoardCamera({
     window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      window.removeEventListener(
-        "mousemove",
-        handleMouseMove
-      );
+      window.removeEventListener("mousemove", handleMouseMove);
 
-      window.removeEventListener(
-        "mouseup",
-        handleMouseUp
-      );
+      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging]);
 
-  const handleMouseDown = (
-    event: React.MouseEvent<HTMLDivElement>
-  ) => {
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
 
     lastMousePosition.current = {
@@ -78,27 +66,19 @@ export function BoardCamera({
     };
   };
 
-  const handleWheel = (
-    event: React.WheelEvent<HTMLDivElement>
-    ) => {
+  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
     event.preventDefault();
 
     const zoomIntensity = 0.1;
 
-    const delta =
-        event.deltaY > 0
-        ? -zoomIntensity
-        : zoomIntensity;
+    const delta = event.deltaY > 0 ? -zoomIntensity : zoomIntensity;
 
     setZoom((prev) => {
-        const nextZoom = prev + delta;
+      const nextZoom = prev + delta;
 
-        return Math.min(
-        Math.max(nextZoom, 0.5),
-        2
-        );
+      return Math.min(Math.max(nextZoom, 0.5), 2);
     });
-    };
+  };
 
   return (
     <div
