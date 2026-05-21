@@ -20,8 +20,8 @@ export function BoardCanvasLayer() {
       <div
         className="
           relative
-          h-[2200px]
-          w-[2200px]
+          h-550
+          w-550
           overflow-hidden
           rounded-[40px]
           border
