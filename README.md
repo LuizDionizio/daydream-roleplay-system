@@ -1,73 +1,108 @@
-# React + TypeScript + Vite
+# DayDream
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+DayDream is a modular narrative-focused Virtual Tabletop and spatial roleplay engine built around immersive interaction, cinematic atmosphere, and scalable world systems.
 
-Currently, two official plugins are available:
+The project is designed not merely as a “token board”, but as a long-term foundation for a fully operational spatial storytelling platform.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+# Vision
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+DayDream aims to combine:
 
-## Expanding the ESLint configuration
+- narrative immersion
+- spatial interaction
+- tactical elegance
+- cinematic presentation
+- modular architecture
+- operational tooling
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The project draws inspiration from:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Foundry VTT
+- Miro
+- Figma
+- RTS interfaces
+- spatial editing software
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+# Core Philosophy
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The architecture follows strict separation of responsibilities.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Every system exists as an isolated operational layer.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The board is treated as:
+
+> a spatial operating system.
+
+Not a monolithic canvas.
+
+---
+
+# Tech Stack
+
+- React
+- TypeScript
+- Vite
+- TailwindCSS v4
+
+---
+
+# Current Architecture
+
+```txt
+src/
+├── app/
+│   └── layout/
+│       └── AppShell.tsx
+│
+├── features/
+│   ├── board/
+│   │   ├── components/
+│   │   │   ├── BoardCamera.tsx
+│   │   │   ├── BoardCanvasLayer.tsx
+│   │   │   ├── BoardOverlayLayer.tsx
+│   │   │   ├── BoardSelectionHUD.tsx
+│   │   │   ├── BoardViewport.tsx
+│   │   │   │
+│   │   │   └── layers/
+│   │   │       ├── BoardAtmosphereLayer.tsx
+│   │   │       ├── BoardEntityLayer.tsx
+│   │   │       ├── BoardGridLayer.tsx
+│   │   │       └── BoardTerrainLayer.tsx
+│   │   │
+│   │   ├── containers/
+│   │   │   └── BoardContainer.tsx
+│   │   │
+│   │   ├── entities/
+│   │   │   ├── BoardEntity.tsx
+│   │   │   └── BoardToken.tsx
+│   │   │
+│   │   ├── interactions/
+│   │   │   ├── math/
+│   │   │   │   └── selectionMath.ts
+│   │   │   │
+│   │   │   ├── systems/
+│   │   │   │   └── interactionMachine.ts
+│   │   │   │
+│   │   │   └── types/
+│   │   │       └── interaction.ts
+│   │   │
+│   │   └── types/
+│   │       ├── board.ts
+│   │       └── camera.ts
+│   │
+│   ├── chronicles/
+│   │   └── containers/
+│   │       └── ChroniclesContainer.tsx
+│   │
+│   └── table/
+│       └── containers/
+│           └── TableContainer.tsx
+│
+├── App.tsx
+├── main.tsx
+└── index.css
 ```
