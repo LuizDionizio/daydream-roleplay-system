@@ -1,11 +1,36 @@
 /**
- * Responsável pela camada principal de renderização do Board.
- * Futuramente conterá mapas, grid, tokens e elementos visuais do cenário.
+ * Responsável pela composição visual das layers do mundo do Board.
+ * Organiza terreno, grid, entidades e atmosfera da viewport.
  */
 
-import { BoardToken } from "../entities/BoardToken";
+import { memo } from "react";
 
-export function BoardCanvasLayer() {
+import { BoardAtmosphereLayer } from "./layers/BoardAtmosphereLayer";
+import { BoardEntityLayer } from "./layers/BoardEntityLayer";
+import { BoardGridLayer } from "./layers/BoardGridLayer";
+import { BoardTerrainLayer } from "./layers/BoardTerrainLayer";
+
+import type { BoardTokenData } from "../types/board";
+
+type BoardCanvasLayerProps = {
+  tokens: BoardTokenData[];
+
+  selectedTokenId: string | null;
+
+  cameraZoom: number;
+
+  onSelectToken: (id: string | null) => void;
+
+  onMoveToken: (tokenId: string, x: number, y: number) => void;
+};
+
+function BoardCanvasLayerComponent({
+  tokens,
+  selectedTokenId,
+  cameraZoom,
+  onSelectToken,
+  onMoveToken,
+}: BoardCanvasLayerProps) {
   return (
     <div
       className="
@@ -16,8 +41,10 @@ export function BoardCanvasLayer() {
         justify-center
       "
     >
-      {/* MAP SURFACE */}
       <div
+        onMouseDown={() => {
+          onSelectToken(null);
+        }}
         className="
           relative
           h-550
@@ -30,57 +57,24 @@ export function BoardCanvasLayer() {
           shadow-2xl
         "
       >
-        {/* DEPTH GRADIENT */}
-        <div
-          className="
-            absolute
-            inset-0
-            z-0
-            bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03),transparent_70%)]
-          "
+        <BoardTerrainLayer />
+
+        <BoardGridLayer />
+
+        <BoardEntityLayer
+          tokens={tokens}
+          selectedTokenId={selectedTokenId}
+          cameraZoom={cameraZoom}
+          onSelectToken={onSelectToken}
+          onMoveToken={onMoveToken}
         />
 
-        {/* GRID */}
-        <div
-          className="
-            absolute
-            inset-0
-            z-10
-            opacity-[0.12]
-          "
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(255,255,255,0.08) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(255,255,255,0.08) 1px, transparent 1px),
-
-              linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
-            `,
-            backgroundSize: `
-              64px 64px,
-              64px 64px,
-              16px 16px,
-              16px 16px
-            `,
-          }}
-        />
-
-        {/* ENTITY LAYER */}
-        <div className="absolute inset-0 z-20">
-          <BoardToken x={900} y={900} />
-        </div>
-
-        {/* VIGNETTE */}
-        <div
-          className="
-            pointer-events-none
-            absolute
-            inset-0
-            z-30
-            bg-[radial-gradient(circle_at_center,transparent_45%,rgba(0,0,0,0.55))]
-          "
-        />
+        <BoardAtmosphereLayer />
       </div>
     </div>
   );
 }
+
+export const BoardCanvasLayer = memo(BoardCanvasLayerComponent);
+
+BoardCanvasLayer.displayName = "BoardCanvasLayer";

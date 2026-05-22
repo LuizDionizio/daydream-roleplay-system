@@ -5,24 +5,32 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import type { BoardCameraState } from "../types/camera";
+
+import { useInteractionMachine } from "../interactions/systems/InteractionMachine";
+
 type BoardCameraProps = {
+  camera: BoardCameraState;
+
+  setCamera: React.Dispatch<React.SetStateAction<BoardCameraState>>;
+
   children: React.ReactNode;
+
+  interaction: ReturnType<typeof useInteractionMachine>;
 };
 
-export function BoardCamera({ children }: BoardCameraProps) {
-  const [position, setPosition] = useState({
-    x: 0,
-    y: 0,
-  });
-
+export function BoardCamera({
+  camera,
+  setCamera,
+  children,
+  interaction,
+}: BoardCameraProps) {
   const [isDragging, setIsDragging] = useState(false);
 
   const lastMousePosition = useRef({
     x: 0,
     y: 0,
   });
-
-  const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -32,8 +40,11 @@ export function BoardCamera({ children }: BoardCameraProps) {
 
       const deltaY = event.clientY - lastMousePosition.current.y;
 
-      setPosition((prev) => ({
+      setCamera((prev) => ({
+        ...prev,
+
         x: prev.x + deltaX,
+
         y: prev.y + deltaY,
       }));
 
@@ -48,6 +59,7 @@ export function BoardCamera({ children }: BoardCameraProps) {
     };
 
     window.addEventListener("mousemove", handleMouseMove);
+
     window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
@@ -55,9 +67,19 @@ export function BoardCamera({ children }: BoardCameraProps) {
 
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging]);
+  }, [isDragging, setCamera]);
 
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    /**
+     * A câmera só deve iniciar pan
+     * quando o modo operacional ativo
+     * for "drag".
+     */
+
+    if (interaction.mode !== "drag") {
+      return;
+    }
+
     setIsDragging(true);
 
     lastMousePosition.current = {
@@ -73,11 +95,15 @@ export function BoardCamera({ children }: BoardCameraProps) {
 
     const delta = event.deltaY > 0 ? -zoomIntensity : zoomIntensity;
 
-    setZoom((prev) => {
-      const nextZoom = prev + delta;
+    const newZoom = camera.zoom + delta;
 
-      return Math.min(Math.max(nextZoom, 0.5), 2);
-    });
+    const clampedZoom = Math.min(Math.max(newZoom, 0.4), 2.5);
+
+    setCamera((prev) => ({
+      ...prev,
+
+      zoom: clampedZoom,
+    }));
   };
 
   return (
@@ -94,9 +120,13 @@ export function BoardCamera({ children }: BoardCameraProps) {
       <div
         style={{
           transform: `
-            translate3d(${position.x}px, ${position.y}px, 0)
-            scale(${zoom})
-            `,
+            translate3d(
+              ${camera.x}px,
+              ${camera.y}px,
+              0
+            )
+            scale(${camera.zoom})
+          `,
         }}
         className="
           relative
